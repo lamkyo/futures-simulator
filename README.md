@@ -1,6 +1,6 @@
 # Futures Backtesting Framework
 
-[![Tier 2 Robustness](https://github.com/<your-username>/futures-simulator/actions/workflows/tier2-checks.yml/badge.svg)](https://github.com/<your-username>/futures-simulator/actions/workflows/tier2-checks.yml)
+[![Tier 2 Robustness](https://github.com/lamkyo/futures-simulator/actions/workflows/tier2-checks.yml/badge.svg)](https://github.com/lamkyo/futures-simulator/actions/workflows/tier2-checks.yml)
 [![Python 3.12](https://img.shields.io/badge/python-3.12-blue.svg)](https://www.python.org/downloads/)
 [![Unit Tests](https://img.shields.io/badge/tests-6%20passing-success.svg)]()
 [![Accounting Identity](https://img.shields.io/badge/diff-0.0000%20USDT-brightgreen.svg)]()
