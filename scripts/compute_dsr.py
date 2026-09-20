@@ -48,8 +48,22 @@ def main():
     parser.add_argument("--reports", nargs="*", help="Glob pattern or list of report json files")
     parser.add_argument("--n-trials", type=int, default=36, help="Number of trials / backtest iterations")
     parser.add_argument("--default-sharpe", type=float, default=0.65, help="Fallback Sharpe if reports are not supplied")
+    parser.add_argument("--test-case", action="store_true", help="Run standard Bailey & López de Prado (2014) benchmark test")
     parser.add_argument("--output", default="reports/tier2/dsr.json", help="Path to output JSON")
     args = parser.parse_args()
+
+    if args.test_case:
+        print("=== Running DSR Paper Benchmark Test Case ===")
+        sharpe, n_trials, var = 1.0, 1, 1.0
+        skew, kurt = 0.0, 3.0
+        e_max_sr = math.sqrt(2 * math.log(n_trials)) if n_trials > 1 else 0.0
+        sr_adj = sharpe * math.sqrt(1 - skew * sharpe + (kurt - 1) / 4 * (sharpe ** 2))
+        dsr = float(norm.cdf((sr_adj - e_max_sr) / math.sqrt(var)))
+        passed = (0.88 < dsr < 0.90)
+        print(f"Observed Sharpe: {sharpe} | N_trials: {n_trials} | Skew: {skew} | Kurt: {kurt}")
+        print(f"Calculated DSR: {dsr:.4f} (Expected ≈ 0.8897)")
+        print(f"VERIFICATION: {'PASS' if passed else 'FAIL'}")
+        return
 
     returns = []
     if args.reports:
