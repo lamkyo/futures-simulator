@@ -29,7 +29,7 @@ jobs:
           pip install -r requirements.txt
           pip install scipy
 
-      - name: Run Unit Tests (Accounting Identity Verification)
+      - name: Run Unit Tests (Accounting Identity Verification & DSR Test)
         run: |
           pytest futures_simulator/tests -v
 
@@ -38,6 +38,16 @@ jobs:
           chmod +x scripts/run_tier2_checks.sh
           bash scripts/run_tier2_checks.sh
 
+      - name: Run Tier 3 AI Reviewer (if summary exists)
+        run: |
+          if [ -f "scripts/ai_reviewer.py" ]; then
+            python scripts/ai_reviewer.py || echo "AI reviewer completed with non-blocking status"
+          fi
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+          ANTHROPIC_API_KEY: ${{ secrets.ANTHROPIC_API_KEY }}
+
       - name: Upload Tier 2 Reports Artifact
         uses: actions/upload-artifact@v4
         with:
@@ -45,7 +55,7 @@ jobs:
           path: reports/tier2/
 
       - name: Send Telegram Status Alert
-        if: always()
+        if: always() && env.TELEGRAM_BOT_TOKEN != '' && env.TELEGRAM_CHAT_ID != ''
         run: |
           python -c "
           import os, requests
